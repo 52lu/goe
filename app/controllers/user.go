@@ -17,7 +17,13 @@ type LoginReturn struct {
 	Name string
 	Home string
 }
-
+/**
+ * @description: 账号密码登录
+ * @user: Mr.LiuQH
+ * @receiver user
+ * @return error
+ * @date 2021-02-04 18:23:23
+ */
 func (user *UserController) Login() error {
 	m := LoginReturn{
 		"李四",
@@ -26,7 +32,16 @@ func (user *UserController) Login() error {
 	return user.Success(m)
 }
 
-func (user *UserController) Config() error {
+
+
+/**
+ * @description: 注册
+ * @user: Mr.LiuQH
+ * @receiver user
+ * @return error
+ * @date 2021-02-04 18:23:48
+ */
+func (user *UserController) Register() error {
 	panic("抛错测试")
 	//return user.Success(nil)
 	return nil

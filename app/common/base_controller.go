@@ -14,7 +14,7 @@ type BaseController struct {
 	Response    http.ResponseWriter
 	Request     *http.Request
 }
-type ApiResponse struct {
+type apiResponse struct {
 	Code int         `json:"code"`
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data"`
@@ -28,13 +28,13 @@ type ApiResponse struct {
  * @date 2021-02-03 18:45:09
  */
 func (b BaseController)Success(data interface{}) error  {
-	result := ApiResponse{
+	result := apiResponse{
 		Code: ReqSuccess,
 		Msg:  ReqSuccessMsg,
 		Data: data,
 	}
 	marshal, _ := json.Marshal(result)
-	b.Response.Write([]byte(marshal))
+	b.Response.Write(marshal)
 	return nil
 }
 
@@ -46,11 +46,11 @@ func (b BaseController)Success(data interface{}) error  {
  * @date 2021-02-03 18:45:20
  */
 func (b BaseController)Error(msg string) error  {
-	result := ApiResponse{
+	result := apiResponse{
 		Code: ReqError,
 		Msg:  msg,
 	}
 	marshal, _ := json.Marshal(result)
-	b.Response.Write([]byte(marshal))
+	b.Response.Write(marshal)
 	return nil
 }
