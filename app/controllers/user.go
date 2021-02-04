@@ -27,6 +27,7 @@ func (user *UserController) Login() error {
 }
 
 func (user *UserController) Config() error {
-
-	return user.Success(nil)
+	panic("抛错测试")
+	//return user.Success(nil)
+	return nil
 }

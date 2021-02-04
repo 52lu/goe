@@ -32,6 +32,8 @@ func (receiver *AppRoute) AddRoute(pattern string, controller interface{}) {
  * @date 2021-02-03 15:35:26
  */
 func (receiver *AppRoute) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// 捕获请求过程中的错误
+	defer BusErrorInstance.CatchError()
 	// 路由转发
 	routeForWard(w, r)
 	return
@@ -67,6 +69,8 @@ func routeForWard(w http.ResponseWriter, r *http.Request) {
 	// 保存请求信息到控制器基类
 	controllerValType.Elem().FieldByName("Response").Set(reflect.ValueOf(w))
 	controllerValType.Elem().FieldByName("Request").Set(reflect.ValueOf(r))
+	// 保存到业务错误类里面
+	BusErrorInstance.Response = w
 	// 判断方法是否存在
 	valid := controllerValType.MethodByName(methodName).IsValid()
 	if !valid {
