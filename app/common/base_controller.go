@@ -1,6 +1,6 @@
 /**
  * @Author Mr.LiuQH
- * @Description TODO
+ * @Description 控制器基类
  * @Date 2021/2/3 10:26 上午
  **/
 package common
