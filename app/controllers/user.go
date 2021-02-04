@@ -25,3 +25,8 @@ func (user *UserController) Login() error {
 	}
 	return user.Success(m)
 }
+
+func (user *UserController) Config() error {
+
+	return user.Success(nil)
+}
