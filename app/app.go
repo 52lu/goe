@@ -19,10 +19,10 @@ type App struct {
 
 // --- 定义全局变量
 var (
-	AppRouteInstance    = &AppRoute{Route: map[string]interface{}{}}
+	RouteListInstance   = &RouteList{Route: map[string]interface{}{}}
 	MysqlConfigInstance = &config.MysqlConfig{}
-	DB                  *sql.DB
-	BusErrorInstance    = &common.BusError{}
+	BaseModel        = &common.BaseModel{}
+	BusErrorInstance = &common.BusError{}
 )
 
 const (
@@ -50,7 +50,7 @@ func (app *App) Start() {
 	app.connectMysql()
 	// 启动服务
 	fmt.Printf("Goe 启动成功！ Host:%s Port:%s \n", app.Host, app.Port)
-	err := http.ListenAndServe(app.Host+":"+app.Port, AppRouteInstance)
+	err := http.ListenAndServe(app.Host+":"+app.Port, RouteListInstance)
 	if err != nil {
 		fmt.Println("启动失败: " + err.Error())
 	}
@@ -64,7 +64,7 @@ func (app *App) Start() {
  */
 func (app *App) registeredRoute() {
 	// 注册路由
-	AppRouteInstance.AddRoute("user", &UserController{})
+	RouteListInstance.AddRoute("user", &UserController{})
 }
 
 /**
@@ -90,12 +90,12 @@ func (app *App) loadConfig() {
  * @date 2021-02-04 17:06:29
  */
 func (app *App) connectMysql() {
-	var err error
 	// 连接数据库
 	// 用户名:密码@tcp(IP:port)/数据库?charset=utf8
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s",
 		MysqlConfigInstance.UserName, MysqlConfigInstance.Password, MysqlConfigInstance.Host, MysqlConfigInstance.Port,
 		MysqlConfigInstance.Database, MysqlConfigInstance.Charset)
-	DB, err = sql.Open("mysql", dataSourceName)
+	db, err := sql.Open("mysql", dataSourceName)
 	BusErrorInstance.ThrowError(err)
+	BaseModel.DB = db
 }

@@ -6,12 +6,10 @@ import (
 	"strings"
 )
 
-
 // 定义路由储存组
-type AppRoute struct {
+type RouteList struct {
 	Route map[string]interface{}
 }
-
 
 /**
  * @description: 注册路由
@@ -19,7 +17,7 @@ type AppRoute struct {
  * @receiver receiver RouteConfig
  * @date 2021-02-03 11:48:03
  */
-func (receiver *AppRoute) AddRoute(pattern string, controller interface{}) {
+func (receiver *RouteList) AddRoute(pattern string, controller interface{}) {
 	receiver.Route[pattern] = controller
 }
 
@@ -31,7 +29,7 @@ func (receiver *AppRoute) AddRoute(pattern string, controller interface{}) {
  * @param r
  * @date 2021-02-03 15:35:26
  */
-func (receiver *AppRoute) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (receiver *RouteList) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// 捕获请求过程中的错误
 	defer BusErrorInstance.CatchError()
 	// 路由转发
@@ -60,7 +58,7 @@ func routeForWard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// 匹配路由
-	controllerStruct, ok := AppRouteInstance.Route[controller]
+	controllerStruct, ok := RouteListInstance.Route[controller]
 	if !ok {
 		http.NotFound(w, r)
 		return
@@ -69,6 +67,10 @@ func routeForWard(w http.ResponseWriter, r *http.Request) {
 	// 保存请求信息到控制器基类
 	controllerValType.Elem().FieldByName("Response").Set(reflect.ValueOf(w))
 	controllerValType.Elem().FieldByName("Request").Set(reflect.ValueOf(r))
+	parseError := r.ParseForm()
+	if parseError != nil {
+		panic("参数解析失败:" + parseError.Error())
+	}
 	// 保存到业务错误类里面
 	BusErrorInstance.Response = w
 	// 判断方法是否存在

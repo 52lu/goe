@@ -54,3 +54,26 @@ func (b BaseController)Error(msg string) error  {
 	b.Response.Write(marshal)
 	return nil
 }
+/**
+ * @description: 获取GET参数
+ * @user: Mr.LiuQH
+ * @receiver b BaseController
+ * @param key
+ * @return string
+ * @date 2021-02-05 16:13:54
+ */
+func (b BaseController)GetParam(key string)string  {
+	return b.Request.FormValue(key)
+}
+/**
+ * @description: 获取Post参数
+ * @user: Mr.LiuQH
+ * @receiver b BaseController
+ * @param key
+ * @return string
+ * @date 2021-02-05 16:13:54
+ */
+func (b BaseController)PostParam(key string)string  {
+	return b.Request.PostFormValue(key)
+}
+

@@ -5,10 +5,12 @@
  **/
 package common
 
-type BaseModel struct {
+import "database/sql"
 
+type BaseModel struct {
+	DB *sql.DB
 }
 
-func (b *BaseModel) findOne()  {
-
+func (b *BaseModel) findOne(column []string, )  {
+	//b.DB.Prepare()
 }

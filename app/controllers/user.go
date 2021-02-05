@@ -14,8 +14,8 @@ type UserController struct {
 }
 
 type LoginReturn struct {
-	Name string
-	Home string
+	UserName string
+	Password string
 }
 /**
  * @description: 账号密码登录
@@ -25,9 +25,14 @@ type LoginReturn struct {
  * @date 2021-02-04 18:23:23
  */
 func (user *UserController) Login() error {
+	userName := user.GetParam("userName")
+	password := user.GetParam("password")
+	if userName == "" || password == "" {
+		 return user.Error("参数不能为空!")
+	}
 	m := LoginReturn{
-		"李四",
-		"北京",
+		userName,
+		password,
 	}
 	return user.Success(m)
 }
