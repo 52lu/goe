@@ -6,7 +6,11 @@
 package controllers
 
 import (
+	"crypto/md5"
+	"fmt"
 	"goe/app/common"
+	"goe/app/models"
+	"strconv"
 )
 
 type UserController struct {
@@ -24,30 +28,71 @@ type LoginReturn struct {
  * @return error
  * @date 2021-02-04 18:23:23
  */
-func (user *UserController) Login() error {
-	userName := user.GetParam("userName")
-	password := user.GetParam("password")
+func (uc *UserController) Login() error {
+	userName := uc.GetParam("userName")
+	password := uc.GetParam("password")
 	if userName == "" || password == "" {
-		 return user.Error("参数不能为空!")
+		 return uc.Error("参数不能为空!")
 	}
 	m := LoginReturn{
 		userName,
 		password,
 	}
-	return user.Success(m)
+	return uc.Success(m)
 }
-
+/**
+ * @description: 查询用户
+ * @user: Mr.LiuQH
+ * @receiver uc
+ * @return error
+ * @date 2021-02-19 15:27:03
+ */
+func (uc *UserController) GetUser() error  {
+	id := uc.GetParam("id")
+	if id == "" {
+		return uc.Error("id不能为空")
+	}
+	userOne := &models.User{}
+	idNumber, _ := strconv.Atoi(id)
+	userOne.FindById(idNumber)
+	return uc.Success(userOne)
+}
 
 
 /**
  * @description: 注册
  * @user: Mr.LiuQH
- * @receiver user
+ * @receiver uc
  * @return error
  * @date 2021-02-04 18:23:48
  */
-func (user *UserController) Register() error {
-	panic("抛错测试")
-	//return user.Success(nil)
-	return nil
+func (uc *UserController) Register() error {
+	nickName := uc.GetParam("nickName")
+	email := uc.GetParam("email")
+	mobile := uc.GetParam("mobile")
+	birthday := uc.GetParam("birthday")
+	notEmptyParam := []string{nickName,email,mobile,birthday}
+	for _,v := range notEmptyParam {
+		if v == "" {
+			return uc.Error(fmt.Sprintf("%s不能为空!",v))
+		}
+	}
+	// 判断用户是否存在
+	userExist := &models.User{}
+	userExist.FindByMobile(mobile)
+	if userExist.ID != 0 {
+		return uc.Error(fmt.Sprintf("手机号%s已经存在!",mobile))
+	}
+	// 插入新用户
+	userOne := &models.User{
+		NickName: nickName,
+		Email: email,
+		Mobile: mobile,
+		Birthday: birthday,
+		Status: 1,
+		Password: fmt.Sprintf("%x",md5.Sum([]byte(mobile))),
+	}
+	userOne.Add()
+	// 入库
+	return uc.Success(userOne)
 }

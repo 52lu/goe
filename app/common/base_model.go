@@ -1,16 +1,16 @@
 /**
  * @Author Mr.LiuQH
- * @Description TODO
- * @Date 2021/2/4 5:57 下午
+ * @Description 模型父类
+ * @Date 2021/2/8 10:49 上午
  **/
 package common
 
-import "database/sql"
+import (
+	"gorm.io/gorm"
+)
 
 type BaseModel struct {
-	DB *sql.DB
-}
-
-func (b *BaseModel) findOne(column []string, )  {
-	//b.DB.Prepare()
+	gorm.Model
+	CreatedAt int
+	UpdatedAt int
 }

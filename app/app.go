@@ -1,14 +1,16 @@
 package app
 
 import (
-	"database/sql"
+	"encoding/json"
 	"fmt"
 	"github.com/go-ini/ini"
-	_ "github.com/go-sql-driver/mysql"
-	"goe/app/common"
-	"goe/app/config"
+	. "goe/app/common"
 	. "goe/app/controllers"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 	"net/http"
+	"time"
 )
 
 type App struct {
@@ -17,21 +19,8 @@ type App struct {
 	Env  string `ini:"env"`
 }
 
-// --- 定义全局变量
-var (
-	RouteListInstance   = &RouteList{Route: map[string]interface{}{}}
-	MysqlConfigInstance = &config.MysqlConfig{}
-	BaseModel        = &common.BaseModel{}
-	BusErrorInstance = &common.BusError{}
-)
 
-const (
-	ConfigPath = "./app/config/" //配置文件目录
-	EnvDev     = "dev"           //
-	EnvLocal   = "local"
-	EnvProd    = "prod"
-	EnvPrepub  = "prod"
-)
+var err error
 
 /**
  * @description: 启动服务
@@ -46,8 +35,8 @@ func (app *App) Start() {
 	app.loadConfig()
 	// 注册路由
 	app.registeredRoute()
-	// 数据库连接
-	app.connectMysql()
+	// 初始化数据库连接
+	app.initializeDB()
 	// 启动服务
 	fmt.Printf("Goe 启动成功！ Host:%s Port:%s \n", app.Host, app.Port)
 	err := http.ListenAndServe(app.Host+":"+app.Port, RouteListInstance)
@@ -89,13 +78,40 @@ func (app *App) loadConfig() {
  * @receiver app
  * @date 2021-02-04 17:06:29
  */
-func (app *App) connectMysql() {
-	// 连接数据库
-	// 用户名:密码@tcp(IP:port)/数据库?charset=utf8
-	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s",
+func (app *App) initializeDB() {
+	// 连接Mysql
+	connectMysql()
+}
+
+/**
+ * @description: 连接mysql(todo 需要设置成单例)
+ * @user: Mr.LiuQH
+ * @date 2021-02-08 10:21:42
+ */
+func connectMysql()  {
+	// 用户名:密码@tcp(IP:port)/数据库?charset=utf8mb4&parseTime=True&loc=Local
+	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=%s&parseTime=%s&loc=%s",
 		MysqlConfigInstance.UserName, MysqlConfigInstance.Password, MysqlConfigInstance.Host, MysqlConfigInstance.Port,
-		MysqlConfigInstance.Database, MysqlConfigInstance.Charset)
-	db, err := sql.Open("mysql", dataSourceName)
+		MysqlConfigInstance.Database, MysqlConfigInstance.Charset, MysqlConfigInstance.ParseTime, MysqlConfigInstance.Loc)
+	GormDBClient, err = gorm.Open(mysql.Open(dataSourceName), &gorm.Config{
+		NamingStrategy: schema.NamingStrategy{
+			TablePrefix: MysqlConfigInstance.TablePre, //表前缀
+			SingularTable: true, //使用单数表名，启用该选项时，`User` 的表名应该是 `user`而不是users
+		},
+	})
 	BusErrorInstance.ThrowError(err)
-	BaseModel.DB = db
+	// 设置连接池信息
+	db, err2 := GormDBClient.DB()
+	BusErrorInstance.ThrowError(err2)
+	// 设置空闲连接池中连接的最大数量
+	db.SetMaxIdleConns(MysqlConfigInstance.MaxIdleConn)
+	// 设置打开数据库连接的最大数量
+	db.SetMaxOpenConns(MysqlConfigInstance.MaxOpenConn)
+	// 设置了连接可复用的最大时间
+	duration, err := time.ParseDuration(MysqlConfigInstance.MaxLifeTime)
+	BusErrorInstance.ThrowError(err)
+	db.SetConnMaxLifetime(duration)
+	// 打印SQL配置信息
+	marshal, _ := json.Marshal(db.Stats())
+	fmt.Printf("数据库配置: %s \n" , marshal)
 }

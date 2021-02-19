@@ -2,6 +2,7 @@ package main
 
 import (
 	"goe/app"
+	"goe/app/common"
 	"os"
 )
 
@@ -14,7 +15,7 @@ func main() {
 	appServer := &app.App{}
 	arg := os.Args
 	if len(arg) < 2 {
-		appServer.Env = app.EnvDev
+		appServer.Env = common.EnvDev
 	} else {
 		appServer.Env = arg[1]
 	}

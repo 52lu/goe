@@ -10,12 +10,17 @@ package config
  * @user: Mr.LiuQH
  */
 type MysqlConfig struct {
-	Host        string `ini:"host"`
+	Host        string `ini:"host"` //
 	Port        string `ini:"port"`
 	Database    string `ini:"database"`
 	UserName    string `ini:"userName"`
 	Password    string `ini:"password"`
 	Charset     string `ini:"charset"`
-	MaxIdleConn string `ini:"max_idle_conn"`
-	MaxOpenConn string `ini:"max_open_conn"`
+	MaxIdleConn int    `ini:"max_idle_conn"`
+	MaxOpenConn int    `ini:"max_open_conn"`
+	ParseTime   string `ini:"parse_time"`
+	Loc         string `ini:"loc"`
+	Timeout     string `ini:"timeout"`
+	MaxLifeTime string `ini:"max_life_time"`
+	TablePre    string `ini:"table_pre"`
 }
