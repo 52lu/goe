@@ -14,7 +14,7 @@ import (
 
 // 全局业务变量单例
 var (
-	RouteListInstance   = &RouteList{Route: map[string]interface{}{}}
+	RouteListInstance   = &RouteList{Route: map[string]map[string]interface{}{}}
 	BusErrorInstance    = &BusError{}
 )
 // 全局客户端变量

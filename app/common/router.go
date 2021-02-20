@@ -1,14 +1,21 @@
 package common
 
 import (
+	"fmt"
 	"net/http"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
+
+var httpWriter http.ResponseWriter
+var httpRequest *http.Request
+
 // 定义路由储存组
 type RouteList struct {
-	Route map[string]interface{}
+	//Route map[string]interface{}
+	Route map[string]map[string]interface{}
 }
 
 /**
@@ -17,8 +24,9 @@ type RouteList struct {
  * @receiver receiver RouteConfig
  * @date 2021-02-03 11:48:03
  */
-func (receiver *RouteList) AddRoute(pattern string, controller interface{}) {
-	receiver.Route[pattern] = controller
+func (receiver *RouteList) AddRoute(version,pattern string, controller interface{}) {
+	//receiver.Route[pattern] = controller
+	receiver.Route[version][pattern] = controller
 }
 
 /**
@@ -30,6 +38,8 @@ func (receiver *RouteList) AddRoute(pattern string, controller interface{}) {
  * @date 2021-02-03 15:35:26
  */
 func (receiver *RouteList) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	httpWriter = w
+	httpRequest = r
 	// 捕获请求过程中的错误
 	defer BusErrorInstance.CatchError()
 	// 路由转发
@@ -57,28 +67,90 @@ func routeForWard(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	// 匹配路由
-	controllerStruct, ok := RouteListInstance.Route[controller]
-	if !ok {
-		http.NotFound(w, r)
-		return
-	}
-	controllerValType := reflect.ValueOf(controllerStruct)
-	// 保存请求信息到控制器基类
-	controllerValType.Elem().FieldByName("Response").Set(reflect.ValueOf(w))
-	controllerValType.Elem().FieldByName("Request").Set(reflect.ValueOf(r))
+	// 解析参数
 	parseError := r.ParseForm()
 	if parseError != nil {
 		panic("参数解析失败:" + parseError.Error())
 	}
-	// 保存到业务错误类里面
+	// 获取版本号
+	version := getVersion(r)
+	fmt.Println("version:" + version)
+
+
+	// todo 匹配路由
+	//controllerStruct, ok := RouteListInstance.Route[controller]
+	//if !ok {
+	//	panic(ReqMethodNotFoundMsg)
+	//	return
+	//}
+	//
+	//controllerValType := reflect.ValueOf(controllerStruct)
+	//// 判断方法是否存在
+	//valid := controllerValType.MethodByName(methodName).IsValid()
+	//if !valid {
+	//	panic(ReqMethodNotFoundMsg)
+	//	return
+	//}
+	controllerValType := matchControllerObj(version,controller,methodName)
+
+	// 保存请求上下文到控制器基类
+	controllerValType.Elem().FieldByName("Response").Set(reflect.ValueOf(w))
+	controllerValType.Elem().FieldByName("Request").Set(reflect.ValueOf(r))
 	BusErrorInstance.Response = w
+	// 调用方法
+	controllerValType.MethodByName(methodName).Call(nil)
+}
+
+
+/**
+ * @description: 获取版本信息
+ * @user: Mr.LiuQH
+ * @param r
+ * @return string
+ * @date 2021-02-19 17:56:16
+ */
+func getVersion( r *http.Request) string  {
+	var version string
+	if r.Method == "GET" {
+		version = r.FormValue("ver")
+	} else if r.Method == "POST" {
+		version = r.PostFormValue("ver")
+	}
+	if version == "" {
+		version = r.Header.Get("ver")
+	}
+	if version == "" {
+		panic(ReqParamVersionLost)
+	}
+	return version
+}
+/**
+ * @description: 匹配路由
+ * @user: Mr.LiuQH
+ * @param version
+ * @param controller
+ * @param methodName
+ * @return interface{}
+ * @date 2021-02-19 18:35:07
+ */
+func matchControllerObj(version,controller,methodName string) reflect.Value  {
+	vGroup,ok := RouteListInstance.Route[version]
+	if !ok {
+		panic(ReqVersionNotExist)
+	}
+	verNumStr := strings.Trim(version,"ver")
+	verNum, _ := strconv.Atoi(verNumStr)
+	// 匹配路由
+	controllerStruct, ok := vGroup[controller]
+	if !ok && verNum > 1 {
+		return matchControllerObj("ver"+strconv.Itoa(verNum),controller,methodName)
+	}
+	controllerValType := reflect.ValueOf(controllerStruct)
 	// 判断方法是否存在
 	valid := controllerValType.MethodByName(methodName).IsValid()
 	if !valid {
-		http.NotFound(w, r)
-		return
+		panic(ReqMethodNotFoundMsg)
+
 	}
-	// 调用方法
-	controllerValType.MethodByName(methodName).Call(nil)
+	return controllerValType
 }

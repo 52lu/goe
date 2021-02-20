@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/go-ini/ini"
 	. "goe/app/common"
-	. "goe/app/controllers"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -34,7 +33,7 @@ func (app *App) Start() {
 	// 加载配置文件
 	app.loadConfig()
 	// 注册路由
-	app.registeredRoute()
+	//app.registeredRoute()
 	// 初始化数据库连接
 	app.initializeDB()
 	// 启动服务
@@ -45,16 +44,16 @@ func (app *App) Start() {
 	}
 }
 
-/**
- * @description: 加载
- * @user: Mr.LiuQH
- * @receiver app App
- * @date 2021-02-03 20:54:45
- */
-func (app *App) registeredRoute() {
-	// 注册路由
-	RouteListInstance.AddRoute("user", &UserController{})
-}
+///**
+// * @description: 加载
+// * @user: Mr.LiuQH
+// * @receiver app App
+// * @date 2021-02-03 20:54:45
+// */
+//func (app *App) registeredRoute() {
+//	// 注册路由
+//	RouteListInstance.AddRoute("user", &UserController{})
+//}
 
 /**
  * @description: 加载配置文件

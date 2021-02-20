@@ -13,6 +13,10 @@ import (
 	"strconv"
 )
 
+//func init() {
+//	common.RouteListInstance.AddRoute("user", &UserController{})
+//}
+
 type UserController struct {
 	common.BaseController
 }
