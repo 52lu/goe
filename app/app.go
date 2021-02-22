@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/go-ini/ini"
 	. "goe/app/common"
-	_ "goe/app/controllers"
 	_ "goe/app/controllers/v1"
 	_ "goe/app/controllers/v2"
 	"gorm.io/driver/mysql"
