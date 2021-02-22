@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"github.com/go-ini/ini"
 	. "goe/app/common"
+	_ "goe/app/controllers"
+	_ "goe/app/controllers/v1"
+	_ "goe/app/controllers/v2"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -17,7 +20,6 @@ type App struct {
 	Port string `ini:"port"`
 	Env  string `ini:"env"`
 }
-
 
 var err error
 
@@ -38,22 +40,14 @@ func (app *App) Start() {
 	app.initializeDB()
 	// 启动服务
 	fmt.Printf("Goe 启动成功！ Host:%s Port:%s \n", app.Host, app.Port)
+	fmt.Printf("路由映射: %+v\n", RouteListInstance.Route)
 	err := http.ListenAndServe(app.Host+":"+app.Port, RouteListInstance)
 	if err != nil {
 		fmt.Println("启动失败: " + err.Error())
 	}
 }
 
-///**
-// * @description: 加载
-// * @user: Mr.LiuQH
-// * @receiver app App
-// * @date 2021-02-03 20:54:45
-// */
-//func (app *App) registeredRoute() {
-//	// 注册路由
-//	RouteListInstance.AddRoute("user", &UserController{})
-//}
+
 
 /**
  * @description: 加载配置文件

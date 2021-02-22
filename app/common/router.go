@@ -9,14 +9,13 @@ import (
 )
 
 
-var httpWriter http.ResponseWriter
-var httpRequest *http.Request
 
 // 定义路由储存组
 type RouteList struct {
 	//Route map[string]interface{}
 	Route map[string]map[string]interface{}
 }
+
 
 /**
  * @description: 注册路由
@@ -25,7 +24,9 @@ type RouteList struct {
  * @date 2021-02-03 11:48:03
  */
 func (receiver *RouteList) AddRoute(version,pattern string, controller interface{}) {
-	//receiver.Route[pattern] = controller
+	if  receiver.Route[version] == nil {
+		receiver.Route[version] = make(map[string]interface{})
+	}
 	receiver.Route[version][pattern] = controller
 }
 
@@ -38,8 +39,6 @@ func (receiver *RouteList) AddRoute(version,pattern string, controller interface
  * @date 2021-02-03 15:35:26
  */
 func (receiver *RouteList) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	httpWriter = w
-	httpRequest = r
 	// 捕获请求过程中的错误
 	defer BusErrorInstance.CatchError()
 	// 路由转发
@@ -75,24 +74,8 @@ func routeForWard(w http.ResponseWriter, r *http.Request) {
 	// 获取版本号
 	version := getVersion(r)
 	fmt.Println("version:" + version)
-
-
-	// todo 匹配路由
-	//controllerStruct, ok := RouteListInstance.Route[controller]
-	//if !ok {
-	//	panic(ReqMethodNotFoundMsg)
-	//	return
-	//}
-	//
-	//controllerValType := reflect.ValueOf(controllerStruct)
-	//// 判断方法是否存在
-	//valid := controllerValType.MethodByName(methodName).IsValid()
-	//if !valid {
-	//	panic(ReqMethodNotFoundMsg)
-	//	return
-	//}
+	//  匹配路由
 	controllerValType := matchControllerObj(version,controller,methodName)
-
 	// 保存请求上下文到控制器基类
 	controllerValType.Elem().FieldByName("Response").Set(reflect.ValueOf(w))
 	controllerValType.Elem().FieldByName("Request").Set(reflect.ValueOf(r))
@@ -143,7 +126,8 @@ func matchControllerObj(version,controller,methodName string) reflect.Value  {
 	// 匹配路由
 	controllerStruct, ok := vGroup[controller]
 	if !ok && verNum > 1 {
-		return matchControllerObj("ver"+strconv.Itoa(verNum),controller,methodName)
+		newVer := "v"+ strconv.Itoa(verNum-1)
+		return matchControllerObj(newVer,controller,methodName)
 	}
 	controllerValType := reflect.ValueOf(controllerStruct)
 	// 判断方法是否存在
