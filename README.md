@@ -139,7 +139,7 @@ func (t TestController) Hello() error  {
 
 每个`Http`请求，最终都会被`ServeHTTP`处理。
 
-**文件: ** `app/common/router.go`
+**文件:**  `app/common/router.go`
 
 ```go
 /**
