@@ -39,6 +39,8 @@ func (receiver *RouteList) AddRoute(version,pattern string, controller interface
  * @date 2021-02-03 15:35:26
  */
 func (receiver *RouteList) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// 初始化业务类属性
+	BusErrorInstance.Response = w
 	// 捕获请求过程中的错误
 	defer BusErrorInstance.CatchError()
 	// 路由转发
@@ -117,6 +119,7 @@ func getVersion( r *http.Request) string  {
  * @date 2021-02-19 18:35:07
  */
 func matchControllerObj(version,controller,methodName string) reflect.Value  {
+	fmt.Printf("进入匹配路由: version:%s controller:%s  methodName:%s \n",version,controller,methodName)
 	vGroup,ok := RouteListInstance.Route[version]
 	if !ok {
 		panic(ReqVersionNotExist)
