@@ -29,6 +29,7 @@ var (
 // 全局常量
 const (
 	ConfigPath = "./app/config/" //配置文件目录
+	StaticPath = "./app/static/" //静态资源文件目录
 	EnvDev     = "dev"           //
 	EnvLocal   = "local"
 	EnvProd    = "prod"

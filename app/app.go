@@ -33,8 +33,6 @@ func (app *App) Start() {
 	defer BusErrorInstance.CatchError()
 	// 加载配置文件
 	app.loadConfig()
-	// 注册路由
-	//app.registeredRoute()
 	// 初始化数据库连接
 	app.initializeDB()
 	// 启动服务
