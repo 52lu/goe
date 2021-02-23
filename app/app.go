@@ -3,9 +3,11 @@ package app
 import (
 	"fmt"
 	"github.com/go-ini/ini"
+	"github.com/go-redis/redis/v8"
 	. "goe/app/common"
 	_ "goe/app/controllers/v1"
 	_ "goe/app/controllers/v2"
+	"golang.org/x/net/context"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -62,6 +64,11 @@ func (app *App) loadConfig() {
 	err = cfg.Section("app").MapTo(app)
 	// 加载mysql配置
 	err = cfg.Section("mysql").MapTo(MysqlConfigInstance)
+	// 加载redis配置
+	err = cfg.Section("redis").MapTo(RedisConfigInstance)
+	if err != nil {
+		BusErrorInstance.ThrowError(err)
+	}
 }
 
 /**
@@ -73,6 +80,8 @@ func (app *App) loadConfig() {
 func (app *App) initializeDB() {
 	// 连接Mysql
 	connectMysql()
+	// 连接Redis
+	connectRedis()
 }
 
 /**
@@ -123,5 +132,21 @@ func connectMysql() {
 	//fmt.Printf("数据库配置: %s \n", marshal)
 }
 
-
-
+/**
+ * @description: 连接Redis
+ * @user: Mr.LiuQH
+ * @date 2021-02-23 17:06:27
+ */
+func connectRedis() {
+	RedisClient = redis.NewClient(&redis.Options{
+		Addr:     RedisConfigInstance.Host + ":" + RedisConfigInstance.Port,
+		Password: RedisConfigInstance.Password,
+		DB:       RedisConfigInstance.DefaultDB,
+		PoolSize: RedisConfigInstance.PoolSize,
+	})
+	ctx, cancelFunc := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancelFunc()
+	result, err := RedisClient.Ping(ctx).Result()
+	fmt.Println("redis: " + result)
+	BusErrorInstance.ThrowError(err)
+}

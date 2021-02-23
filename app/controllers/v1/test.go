@@ -5,7 +5,9 @@
  **/
 package v1
 
-import "goe/app/common"
+import (
+	"goe/app/common"
+)
 
 type TestController struct {
 	common.BaseController
@@ -17,5 +19,7 @@ func (t TestController) Hello() error {
 	return t.Error("v1 hello")
 }
 func (t TestController) Run() error {
+	//ctx := context.Background()
+	//common.RedisClient.Set()
 	return t.Error("v1 Run")
 }

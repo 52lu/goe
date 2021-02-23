@@ -24,5 +24,17 @@ type MysqlConfig struct {
 	MaxLifeTime string `ini:"max_life_time"`
 	TablePre    string `ini:"table_pre"`
 	SlowSqlTime string `ini:"slow_sql_time"`
-	PrintSqlLog bool `ini:"print_sql_log"`
+	PrintSqlLog bool   `ini:"print_sql_log"`
+}
+
+/**
+ * @description: Redis配置信息
+ * @user: Mr.LiuQH
+ */
+type RedisConfig struct {
+	Host      string `ini:"host"`
+	Port      string `ini:"port"`
+	DefaultDB int    `ini:"default_db"`
+	Password  string `ini:"password"`
+	PoolSize  int `ini:"pool_size"`
 }

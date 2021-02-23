@@ -7,6 +7,7 @@ package v1
 
 import (
 	"crypto/md5"
+	"encoding/json"
 	"fmt"
 	"goe/app/common"
 	"goe/app/models"
@@ -41,6 +42,9 @@ func (uc UserController) GetUser() error {
 	} else {
 		return uc.Error("查询条件不能为空!")
 	}
+	db, _ := common.GormDBClient.DB()
+	marshal, _ := json.Marshal(db.Stats())
+	fmt.Printf("数据库配置: %s \n", marshal)
 	return uc.Success(userModel)
 }
 

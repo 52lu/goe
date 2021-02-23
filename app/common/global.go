@@ -6,6 +6,7 @@
 package common
 
 import (
+	"github.com/go-redis/redis/v8"
 	"goe/app/config"
 	"gorm.io/gorm"
 )
@@ -14,17 +15,19 @@ import (
 var (
 	RouteListInstance = &RouteList{Route: make(map[string]map[string]interface{})}
 	BusErrorInstance  = &BusError{}
-	CliInfoInstance = CliInfo{}
+	CliInfoInstance   = CliInfo{}
 )
 
 // 全局客户端变量
 var (
 	GormDBClient *gorm.DB
+	RedisClient  *redis.Client
 )
 
 // 全局配置变量
 var (
 	MysqlConfigInstance = &config.MysqlConfig{}
+	RedisConfigInstance = &config.RedisConfig{}
 )
 
 // 全局常量
@@ -36,4 +39,3 @@ const (
 	EnvProd    = "prod"
 	EnvPrepub  = "prod"
 )
-

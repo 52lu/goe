@@ -1,7 +1,6 @@
 package common
 
 import (
-	"fmt"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -135,7 +134,7 @@ func getVersion(r *http.Request) string {
  * @date 2021-02-19 18:35:07
  */
 func matchControllerObj(version, controller, methodName string) reflect.Value {
-	fmt.Printf("进入匹配路由: version:%s controller:%s  methodName:%s \n", version, controller, methodName)
+	//fmt.Printf("进入匹配路由: version:%s controller:%s  methodName:%s \n", version, controller, methodName)
 	vGroup, ok := RouteListInstance.Route[version]
 	if !ok {
 		panic(ReqVersionNotExist)
