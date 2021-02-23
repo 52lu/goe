@@ -30,6 +30,7 @@ func (cli CliInfo) PrintRunMsg() {
 	}
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"key","Value"})
+	table.SetColWidth(800)
 	// 设置颜色
 	table.SetColumnColor(
 		tablewriter.Colors{tablewriter.FgHiGreenColor},

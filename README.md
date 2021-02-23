@@ -1,5 +1,5 @@
 ### 1.背景介绍
-使用`Go`开发`Web API`框架，验证学习成果。在实践中学习。
+使用Go开发Web API框架，验证平时学习成果，在实践中深入学习。框架支持多版本API,集成Gorm、配置文件解析、后续随着学习深入，继续集成其他服务。
 
 ### 2.目录介绍
 
@@ -263,3 +263,14 @@ func matchControllerObj(version, controller, methodName string) reflect.Value {
 ```
 
 
+### 5.启动
+```bigquery
+➜  go run main.go 
++--------+----------------------+
+|  KEY   |        VALUE         |
++--------+----------------------+
+| Config | ./app/config/dev.ini |
+| Host   | 127.0.0.1            |
+| Port   | 9923                 |
++--------+----------------------+
+```
