@@ -53,3 +53,14 @@ func (um *User) UpdateStatus(user User) {
 		common.BusErrorInstance.ThrowError(result.Error)
 	}
 }
+/**
+ * @description: 删除用户(软删除)
+ * @user: Mr.LiuQH
+ * @receiver um
+ * @date 2021-02-23 15:27:43
+ */
+func (um *User) DelUser(id int)  {
+	if result := common.GormDBClient.Delete(um,id);result.Error != nil {
+		common.BusErrorInstance.ThrowError(result.Error)
+	}
+}

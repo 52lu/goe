@@ -24,7 +24,7 @@ type BusError struct {
 func (b *BusError) CatchError() {
 	// 捕获全局错误
 	err := recover()
-	msg := fmt.Sprintf("运行异常: %v", err)
+	msg := fmt.Sprintf("ErrorMsg: %v", err)
 	if err != nil {
 		if b.Response != nil {
 			marshal, _ := json.Marshal(map[string]interface{}{
@@ -47,6 +47,6 @@ func (b *BusError) CatchError() {
  */
 func (b *BusError) ThrowError(err error)  {
 	if err != nil {
-		panic("处理失败:"+err.Error())
+		panic(err.Error())
 	}
 }

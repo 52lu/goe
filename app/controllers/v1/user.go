@@ -107,3 +107,24 @@ func (uc UserController) Update() error {
 	userModel.UpdateStatus(userUpdate)
 	return uc.Success(userModel)
 }
+/**
+ * @description: 删除用户
+ * @user: Mr.LiuQH
+ * @receiver uc UserController
+ * @return error
+ * @date 2021-02-23 15:29:19
+ */
+func (uc UserController) Del() error  {
+	uid := uc.GetParam("uid")
+	if uid == "" {
+		return uc.Error("缺少参数!")
+	}
+	userModel := &models.User{}
+	id, _ := strconv.Atoi(uid)
+	userModel.FindById(id)
+	if userModel.ID == 0 {
+		return uc.Error("用户不存在!")
+	}
+	userModel.DelUser(id)
+	return uc.Success(userModel)
+}
