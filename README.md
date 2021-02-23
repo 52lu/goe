@@ -7,11 +7,12 @@
 ├── README.md
 ├── app
 │   ├── app.go //主程序文件
-│   ├── common // 公共文件
+│   ├── common // 公共文件目录
 │   │   ├── base_controller.go // 控制器基类
 │   │   ├── base_model.go // 模型基类
 │   │   ├── error.go // 错误处理
 │   │   ├── global.go // 全局变量
+│   │   ├── cli.go // 输出到控制台样式
 │   │   ├── response_code.go // api返回code定义
 │   │   └── router.go // 路由解析
 │   ├── config // 配置目录

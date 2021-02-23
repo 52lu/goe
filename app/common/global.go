@@ -14,6 +14,7 @@ import (
 var (
 	RouteListInstance = &RouteList{Route: make(map[string]map[string]interface{})}
 	BusErrorInstance  = &BusError{}
+	CliInfoInstance = CliInfo{}
 )
 
 // 全局客户端变量
@@ -35,3 +36,4 @@ const (
 	EnvProd    = "prod"
 	EnvPrepub  = "prod"
 )
+

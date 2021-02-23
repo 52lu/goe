@@ -10,7 +10,7 @@ package config
  * @user: Mr.LiuQH
  */
 type MysqlConfig struct {
-	Host        string `ini:"host"` //
+	Host        string `ini:"host"`
 	Port        string `ini:"port"`
 	Database    string `ini:"database"`
 	UserName    string `ini:"userName"`
@@ -23,4 +23,6 @@ type MysqlConfig struct {
 	Timeout     string `ini:"timeout"`
 	MaxLifeTime string `ini:"max_life_time"`
 	TablePre    string `ini:"table_pre"`
+	SlowSqlTime string `ini:"slow_sql_time"`
+	PrintSqlLog bool `ini:"print_sql_log"`
 }

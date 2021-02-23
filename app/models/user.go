@@ -11,33 +11,45 @@ import (
 
 type User struct {
 	common.BaseModel
-	NickName string
-	Password string
-	Email    string
-	Mobile   string
-	Gender   int8
-	Birthday string
-	Status   int8
+	NickName string          `json:"nickName"`
+	Password string          `json:"password"`
+	Email    string          `json:"email"`
+	Mobile   string          `json:"mobile"`
+	Gender   int8            `json:"gender"`
+	Birthday common.DateTime `json:"birthday"`
+	Status   int8            `json:"status"`
 }
 
 // 根据主键查询
-func (um *User) FindById(id int)  {
-	if result := common.GormDBClient.First(um,id); result.Error != nil {
+func (um *User) FindById(id int) {
+	if result := common.GormDBClient.First(um, id); result.Error != nil {
 		common.BusErrorInstance.ThrowError(result.Error)
 	}
 }
-// 创建
-func (um *User) Add()  {
-	if result := common.GormDBClient.Create(um);result.Error != nil {
+
+// 添加单条记录
+func (um *User) Add() {
+	if result := common.GormDBClient.Create(um); result.Error != nil {
 		common.BusErrorInstance.ThrowError(result.Error)
 	}
 }
+
 // 根据条件查询
-func (um *User) FindByMobile( mobile string)  {
-	if result := common.GormDBClient.Where("mobile=?",mobile).Find(um);result.Error != nil {
+func (um *User) FindByMobile(mobile string) {
+	if result := common.GormDBClient.Where("mobile=?", mobile).Find(um); result.Error != nil {
 		common.BusErrorInstance.ThrowError(result.Error)
 	}
 }
 
-
-
+/**
+ * @description: 更新用户信息
+ * @user: Mr.LiuQH
+ * @receiver um
+ * @param user
+ * @date 2021-02-23 10:03:14
+ */
+func (um *User) UpdateStatus(user User) {
+	if result := common.GormDBClient.Model(um).Updates(user); result.Error != nil {
+		common.BusErrorInstance.ThrowError(result.Error)
+	}
+}

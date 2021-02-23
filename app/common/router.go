@@ -92,7 +92,6 @@ func routeForWard(w http.ResponseWriter, r *http.Request) {
 	}
 	// 获取版本号
 	version := getVersion(r)
-	fmt.Println("version:" + version)
 	//  匹配路由
 	controllerValType := matchControllerObj(version, controller, methodName)
 	// 保存请求上下文到控制器基类
