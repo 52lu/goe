@@ -22,6 +22,9 @@ func init() {
 func (t TestController) Hello() error  {
 	return t.Error("v2 hello")
 }
+
+
+var ctx = context.Background()
 /**
  * @description: redis设置
  * @user: Mr.LiuQH
@@ -32,7 +35,6 @@ func (t TestController) Hello() error  {
 func (t TestController) ReSet() error  {
 	key := t.GetParam("key")
 	val := t.GetParam("val")
-	ctx := context.Background()
 	err := common.RedisClient.Set(ctx, key, val, time.Second * 60).Err()
 	if err != nil {
 		return t.Error("Set: " + err.Error())
@@ -48,7 +50,6 @@ func (t TestController) ReSet() error  {
  */
 func (t TestController) ReGet() error  {
 	key := t.GetParam("key")
-	ctx := context.Background()
 	result, err := common.RedisClient.Get(ctx, key).Result()
 	if err == redis.Nil {
 		return t.Error(key + " not exist")
