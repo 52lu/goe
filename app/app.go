@@ -140,11 +140,13 @@ func connectMysql() {
 func connectRedis() {
 	RedisClient = redis.NewClient(&redis.Options{
 		Addr:     RedisConfigInstance.Host + ":" + RedisConfigInstance.Port,
-		Password: RedisConfigInstance.Password,
-		DB:       RedisConfigInstance.DefaultDB,
-		PoolSize: RedisConfigInstance.PoolSize,
+		Password: RedisConfigInstance.Password, // 密码
+		DB:       RedisConfigInstance.DefaultDB, // 默认数据库
+		PoolSize: RedisConfigInstance.PoolSize, // 连接池大小
 	})
-	ctx, cancelFunc := context.WithTimeout(context.Background(), time.Second*5)
+	// 设置连接超时时间
+	duration, err := time.ParseDuration(RedisConfigInstance.TimeOut)
+	ctx, cancelFunc := context.WithTimeout(context.Background(), duration)
 	defer cancelFunc()
 	result, err := RedisClient.Ping(ctx).Result()
 	fmt.Println("redis: " + result)

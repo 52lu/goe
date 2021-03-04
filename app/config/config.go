@@ -36,5 +36,6 @@ type RedisConfig struct {
 	Port      string `ini:"port"`
 	DefaultDB int    `ini:"default_db"`
 	Password  string `ini:"password"`
-	PoolSize  int `ini:"pool_size"`
+	PoolSize  int    `ini:"pool_size"`
+	TimeOut   string    `ini:"timeout"`
 }
