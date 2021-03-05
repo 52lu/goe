@@ -274,3 +274,9 @@ func matchControllerObj(version, controller, methodName string) reflect.Value {
 | Port   | 9923                 |
 +--------+----------------------+
 ```
+
+### 6.开发笔记
+- [框架开发(一):目录介绍和路由设计](http://liuqh.icu/2021/02/01/go/advanced/1-goe/)
+- [框架开发(二):集成Gorm及使用](http://liuqh.icu/2021/02/02/go/advanced/2-goe-gorm/)
+- [框架开发(三):集成Go-Redis及使用](http://liuqh.icu/2021/02/03/go/advanced/3-goe-redis/)
+
