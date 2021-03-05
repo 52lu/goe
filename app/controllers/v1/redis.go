@@ -103,3 +103,97 @@ func (r RedisController) SortSet() error  {
 		return r.Success(resultMap)
 	}
 }
+
+/**
+ * @description: 哈希类型操作
+ * @user: Mr.LiuQH
+ * @receiver r RedisController
+ * @return error
+ * @date 2021-03-04 14:13:22
+ */
+func (r RedisController) Hash() error {
+	//  将哈希表 key 中的字段 field 的值设为 value 。
+	opType := r.GetParam("opType")
+	result := make(map[string]interface{})
+	if opType == "1" {
+		// Hset:将哈希表 key 中的字段 field 的值设为 value 。
+		err := RedisClient.HSet(ctx, "HSet-key", "field_name", "张三").Err()
+		// HmSET:同时将多个 field-value (域-值)对设置到哈希表 key 中。
+		err = RedisClient.HMSet(ctx, "HMSet-key", "field1","val1","field2","val2","field3","val3").Err()
+		if err != nil {
+			return  r.Error(err.Error())
+		}
+		return  r.Success(nil)
+	} else {
+		// HEXISTS:查看哈希表key中，指定的字段是否存在。
+		res, err := RedisClient.HExists(ctx, "HSet-key", "field_name").Result()
+		result["HExists"] = res
+		// HGET:获取存储在哈希表中指定字段的值。
+		s, err := RedisClient.HGet(ctx, "HMSet-key", "field2").Result()
+		result["HGet"] = s
+		//HGETALL:获取在哈希表中指定 key 的所有字段和值
+		m, err := RedisClient.HGetAll(ctx, "HMSet-key").Result()
+		result["HGet"] = m
+		// Hkeys:获取所有哈希表中的字段
+		strings, err := RedisClient.HKeys(ctx, "HMSet-key").Result()
+		result["HKeys"] = strings
+		// HVALS:获取哈希表中所有值。
+		i, err := RedisClient.HVals(ctx, "HMSet-key").Result()
+		result["HVals"] = i
+		// HMGET:获取所有给定字段的值
+		i2, err := RedisClient.HMGet(ctx, "HMSet-key", "field1", "field2", "field3").Result()
+		result["HMGet"] = i2
+		if err != nil {
+			return  r.Error(err.Error())
+		}
+		return  r.Success(result)
+	}
+}
+/**
+ * @description: 列表类型操作
+ * @user: Mr.LiuQH
+ * @receiver r RedisController
+ * @return error
+ */
+func (r RedisController) List() error {
+	opType := r.GetParam("opType")
+	key := "List:Rows"
+	result := make(map[string]interface{})
+	if opType == "1" {
+		// LPUSH: 将一个或多个值插入到列表头部
+		err := RedisClient.LPush(ctx, key, "PHP", "C", "GO", "JAVA", "PYTHON").Err()
+		// RPUSH:将一个或多个值插入到列表的尾部
+		err = RedisClient.LPush(ctx, key, "C++", "HTML").Err()
+		if err != nil {
+			return  r.Error(err.Error())
+		}
+	} else if opType == "2"  {
+		// BLPOP:移出并获取列表的第一个元素(阻塞)
+		duration, err := time.ParseDuration("10s")
+		res, err := RedisClient.BLPop(ctx, duration, key).Result()
+		result["BLPOP"] = res
+		//BRPOP:移出并获取列表的最后一个元素(阻塞)
+		strings, err := RedisClient.BRPop(ctx, duration, key).Result()
+		result["BRPop"] = strings
+		// LPOP:移出并获取列表的第一个元素
+		s, err := RedisClient.LPop(ctx, key).Result()
+		result["LPop"] = s
+		// RPOP:移除列表的最后一个元素，返回值为移除的元素。
+		s2, err := RedisClient.RPop(ctx, key).Result()
+		result["RPOP"] = s2
+		if err != nil {
+			return  r.Error(err.Error())
+		}
+	} else {
+		//LINDEX: 通过索引获取列表中的元素
+		s, err := RedisClient.LIndex(ctx, key, 0).Result()
+		result["LIndex-0"] = s
+		//LRANGE:获取列表指定范围内的元素
+		strings, err := RedisClient.LRange(ctx, key, 0, 3).Result()
+		result["LRange"] = strings
+		if err != nil {
+			return  r.Error(err.Error())
+		}
+	}
+	return  r.Success(result)
+}
