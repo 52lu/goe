@@ -90,7 +90,7 @@ func connectRedis() {
 }
 
 /**
- * @description: 设置全局日志
+ * @description: 设置全局日志Logger
  * @user: Mr.LiuQH
  * @date 2021-03-08 14:11:07
  */
