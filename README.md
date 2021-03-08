@@ -7,7 +7,7 @@
 | Gorm     | [框架开发(二):集成Gorm及使用](http://liuqh.icu/2021/02/02/go/advanced/2-goe-gorm/) |
 | Go-Redis | [框架开发(三):集成Go-Redis及使用](http://liuqh.icu/2021/02/03/go/advanced/3-goe-redis/) |
 |go-ini    |       无                                                      |
-|logrus    |  [框架开发(四):集成Logrus及使用](http://liuqh.icu/2021/02/02/go/advanced/2-goe-gorm/)                                                            |
+|logrus    |  [框架开发(四):集成Logrus及使用](http://liuqh.icu/2021/02/04/go/advanced/4-goe-logrus/)                                                            |
 
 
 
