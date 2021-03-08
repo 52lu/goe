@@ -50,7 +50,5 @@ type LogrusConfig struct {
 	Formatter    string `ini:"formatter"`
 	OutputType   string `ini:"output_type"`
 	ReportCaller bool   `ini:"report_caller"`
-	ClassSaveNum uint   `ini:"class_save_num"`
 	Suffix       string `ini:"suffix_format"`
-	SplitTime    string `ini:"split_time"`
 }

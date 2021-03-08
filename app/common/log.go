@@ -6,48 +6,70 @@
 package common
 
 import (
+	"fmt"
 	goFileRotatelogs "github.com/lestrrat/go-file-rotatelogs"
 	"github.com/rifflock/lfshook"
 	"github.com/sirupsen/logrus"
 	"path"
+	"strings"
 	"time"
 )
+
+type CustomizeFormat struct {
+}
+
 /**
- * @description: TODO
+ * @description: 自定义格式输出
+ * @user: Mr.LiuQH
+ * @receiver c CustomizeFormat
+ * @param entry
+ * @return []byte
+ * @return error
+ * @date 2021-03-08 15:53:29
+ */
+func (c CustomizeFormat) Format(entry *logrus.Entry) ([]byte, error) {
+	msg := fmt.Sprintf("[%s] [%s] %s \n",
+		time.Now().Local().Format("2006-01-02 15:04:05"),
+		strings.ToUpper(entry.Level.String()),
+		entry.Message,
+	)
+	return []byte(msg), nil
+}
+
+/**
+ * @description: 写入日志并分割
  * @user: Mr.LiuQH
  * @param save
  * @date 2021-03-08 15:16:32
  */
 func Log2FileByClass() {
 	lfhook := lfshook.NewHook(lfshook.WriterMap{
-		logrus.DebugLevel: write("debug"),
-		logrus.InfoLevel:  write("info"),
-		logrus.WarnLevel:  write("warn"),
-		logrus.ErrorLevel: write("error"),
-		logrus.FatalLevel: write("fatal"),
-		logrus.PanicLevel: write("painc"),
+		logrus.DebugLevel: splitConfig("debug"),
+		logrus.InfoLevel:  splitConfig("info"),
+		logrus.WarnLevel:  splitConfig("warn"),
+		logrus.ErrorLevel: splitConfig("error"),
+		logrus.FatalLevel: splitConfig("fatal"),
+		logrus.PanicLevel: splitConfig("painc"),
 	}, LoggerClient.Formatter)
 	LoggerClient.AddHook(lfhook)
 }
 
-func write(level string) *goFileRotatelogs.RotateLogs {
+/**
+ * @description: 分割文件配置
+ * @user: Mr.LiuQH
+ * @param level
+ * @return *goFileRotatelogs.RotateLogs
+ * @date 2021-03-08 15:49:08
+ */
+func splitConfig(level string) *goFileRotatelogs.RotateLogs {
 	// 拼凑日志名
 	logFile := path.Join(LogrusConfigInstance.Path, level)
-	//解析日志切割间隔时间
-	splitTime, err := time.ParseDuration(LogrusConfigInstance.SplitTime)
 	logs, err := goFileRotatelogs.New(
 		// 文件名
 		logFile+"-"+LogrusConfigInstance.Suffix,
 		// 生成软链，指向最新日志文件
 		goFileRotatelogs.WithLinkName(logFile),
-		//文件最大保存份数
-		goFileRotatelogs.WithRotationCount(int(LogrusConfigInstance.ClassSaveNum)),
-		// 文件最大保存时间
-		goFileRotatelogs.WithMaxAge(time.Minute * 3),
-		//日志切割时间间隔
-		goFileRotatelogs.WithRotationTime(splitTime),
 	)
 	BusErrorInstance.ThrowError(err)
 	return logs
-
 }

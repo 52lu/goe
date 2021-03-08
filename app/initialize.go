@@ -95,7 +95,6 @@ func connectRedis() {
  * @date 2021-03-08 14:11:07
  */
 func setLoggerInstance() {
-
 	// 设置日志级别
 	var level logrus.Level
 	err := level.UnmarshalText([]byte(LogrusConfigInstance.Level))
@@ -106,8 +105,10 @@ func setLoggerInstance() {
 		LoggerClient.SetFormatter(&logrus.JSONFormatter{})
 	} else if LogrusConfigInstance.Formatter == "text" {
 		LoggerClient.SetFormatter(&logrus.TextFormatter{})
+	} else if LogrusConfigInstance.Formatter == "customize" {
+		LoggerClient.SetFormatter(&CustomizeFormat{})
 	} else {
-		BusErrorInstance.ThrowError(errors.New("log formatter must json or text"))
+		BusErrorInstance.ThrowError(errors.New("log formatter must json|text|customize"))
 	}
 	// 打开日志记录的行数；true:开启，false:关闭。默认关闭
 	if LogrusConfigInstance.ReportCaller {
@@ -121,14 +122,8 @@ func setLoggerInstance() {
 	case "2":
 		// 文件
 		Log2FileByClass()
-		//file, err := os.OpenFile(LogrusConfigInstance.Path+"/app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-		//if err != nil {
-		//	BusErrorInstance.ThrowError(err)
-		//}
-		//LoggerClient.SetOutput(file)
 	default:
 		// 默认写到控制台
 		LoggerClient.SetOutput(os.Stdout)
 	}
-
 }
