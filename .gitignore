@@ -2,3 +2,4 @@
 go_*
 go.sum
 app/config/local.ini
+log

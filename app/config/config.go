@@ -37,5 +37,20 @@ type RedisConfig struct {
 	DefaultDB int    `ini:"default_db"`
 	Password  string `ini:"password"`
 	PoolSize  int    `ini:"pool_size"`
-	TimeOut   string    `ini:"timeout"`
+	TimeOut   string `ini:"timeout"`
+}
+
+/**
+ * @description: 日志配置
+ * @user: Mr.LiuQH
+ */
+type LogrusConfig struct {
+	Path         string `ini:"path"`
+	Level        string `ini:"level"`
+	Formatter    string `ini:"formatter"`
+	OutputType   string `ini:"output_type"`
+	ReportCaller bool   `ini:"report_caller"`
+	ClassSaveNum uint   `ini:"class_save_num"`
+	Suffix       string `ini:"suffix_format"`
+	SplitTime    string `ini:"split_time"`
 }
