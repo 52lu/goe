@@ -120,7 +120,7 @@ func setLoggerInstance() {
 		// 控制台
 		LoggerClient.SetOutput(os.Stdout)
 	case "2":
-		// 文件
+		// 文件(日志分类配置)
 		Log2FileByClass()
 	default:
 		// 默认写到控制台

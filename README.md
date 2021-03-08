@@ -1,5 +1,17 @@
 ### 1.背景介绍
 使用Go开发Web API框架，验证平时学习成果，在实践中深入学习。框架支持多版本API,集成Gorm、配置文件解析、后续随着学习深入，继续集成其他服务。
+#### 1.1 集成功能
+
+| 集成服务 | 笔记摘要                                                     |
+| -------- | ------------------------------------------------------------ |
+| Gorm     | [框架开发(二):集成Gorm及使用](http://liuqh.icu/2021/02/02/go/advanced/2-goe-gorm/) |
+| Go-Redis | [框架开发(三):集成Go-Redis及使用](http://liuqh.icu/2021/02/03/go/advanced/3-goe-redis/) |
+|go-ini    |       无                                                      |
+|logrus    |  [框架开发(四):集成Logrus及使用](http://liuqh.icu/2021/02/02/go/advanced/2-goe-gorm/)                                                            |
+
+
+
+
 
 ### 2.目录介绍
 
