@@ -59,21 +59,15 @@ const userIndex = "go-user"
 
 var esCtx = context.Background()
 
-// 判断索引是否存在
-func (e ElasticController) checkIndex(ctx2 context.Context) error {
-	exist, err := ElasticClient.IndexExists(userIndex).Do(ctx2)
+// 创建索引
+func (e ElasticController) CreateIndex() error {
+	exist, err := ElasticClient.IndexExists(userIndex).Do(esCtx)
 	if err != nil {
 		return e.Error(err.Error())
 	}
 	if exist {
 		return e.Error("索引已经存在，无需重复创建!")
 	}
-	return nil
-}
-
-// 创建索引
-func (e ElasticController) CreateIndex() error {
-	_ = e.checkIndex(esCtx)
 	// 创建索引
 	res, err := ElasticClient.CreateIndex(userIndex).BodyString(userMapping).Do(esCtx)
 	LoggerClient.WithFields(logrus.Fields{
@@ -94,7 +88,6 @@ type User struct {
 	Smoke  bool      `json:"smoke"`
 	Home   string    `json:"home"`
 }
-
 
 // 添加文档
 func (e ElasticController) AddOneDoc() error {
@@ -145,6 +138,7 @@ func (e ElasticController) BatchAddDoc() error {
 
 // 查询
 func (e ElasticController) Get() error {
+	//ElasticClient.Get().Index(userIndex).Id().
 	//ElasticClient.Get().Index(userIndex).
 	return nil
 }
