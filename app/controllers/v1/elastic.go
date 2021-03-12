@@ -30,7 +30,7 @@ const userMapping = `
     "mappings":{
         "properties":{
             "name":{
-                "type":"keyword"
+                "type":"text"
             },
             "age":{
                 "type":"byte"
