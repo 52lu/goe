@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-redis/redis/v8"
+	"github.com/olivere/elastic/v7"
 	"github.com/sirupsen/logrus"
 	. "goe/app/common"
 	"gorm.io/driver/mysql"
@@ -126,4 +127,24 @@ func setLoggerInstance() {
 		// 默认写到控制台
 		LoggerClient.SetOutput(os.Stdout)
 	}
+}
+
+/**
+ * @description:
+ * @user: Mr.LiuQH
+ * @date 2021-03-11 15:56:48
+ */
+func connectElastic() {
+	duration, err := time.ParseDuration(ElasticConfigInstance.HealthCheckInterval)
+	BusErrorInstance.ThrowError(err)
+	ElasticClient, err = elastic.NewClient(
+		elastic.SetURL(ElasticConfigInstance.Url),
+		elastic.SetSniff(ElasticConfigInstance.SnifferEnabled),
+		elastic.SetHealthcheckInterval(duration),
+		elastic.SetErrorLog(log.New(os.Stderr, "ES ", log.LstdFlags)),
+		elastic.SetInfoLog(log.New(os.Stdout, " ", log.LstdFlags)),
+	)
+	BusErrorInstance.ThrowError(err)
+	res, err := ElasticClient.ClusterHealth().Index("test").Level("shards").Pretty(true).Do(context.TODO())
+	LoggerClient.Info("es:%v", res)
 }

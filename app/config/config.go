@@ -10,6 +10,7 @@ package config
  * @user: Mr.LiuQH
  */
 type MysqlConfig struct {
+	Enabled     bool   `ini:"enabled"`
 	Host        string `ini:"host"`
 	Port        string `ini:"port"`
 	Database    string `ini:"database"`
@@ -32,6 +33,7 @@ type MysqlConfig struct {
  * @user: Mr.LiuQH
  */
 type RedisConfig struct {
+	Enabled   bool   `ini:"enabled"`
 	Host      string `ini:"host"`
 	Port      string `ini:"port"`
 	DefaultDB int    `ini:"default_db"`
@@ -45,10 +47,22 @@ type RedisConfig struct {
  * @user: Mr.LiuQH
  */
 type LogrusConfig struct {
+	Enabled      bool   `ini:"enabled"`
 	Path         string `ini:"path"`
 	Level        string `ini:"level"`
 	Formatter    string `ini:"formatter"`
 	OutputType   string `ini:"output_type"`
 	ReportCaller bool   `ini:"report_caller"`
 	Suffix       string `ini:"suffix_format"`
+}
+
+/**
+ * @description: ES配置
+ * @user: Mr.LiuQH
+ */
+type ElasticConfig struct {
+	Enabled             bool   `ini:"enabled"`
+	Url                 string `ini:"url"`
+	SnifferEnabled      bool   `ini:"sniffer_enabled"`
+	HealthCheckInterval string `ini:"health_check_interval"`
 }

@@ -28,8 +28,8 @@ func (app *App) Start() {
 	defer BusErrorInstance.CatchError()
 	// 加载配置文件
 	app.loadConfig()
-	// 初始化数据库连接
-	app.initializeDB()
+	// 初始化语句
+	app.initializeHandle()
 	// 设置打印的信息
 	CliInfoInstance.Host = app.Host
 	CliInfoInstance.Port = app.Port
@@ -59,10 +59,9 @@ func (app *App) loadConfig() {
 	err = cfg.Section("redis").MapTo(RedisConfigInstance)
 	// 加载日志配置
 	err = cfg.Section("log").MapTo(LogrusConfigInstance)
-	if err != nil {
-		BusErrorInstance.ThrowError(err)
-	}
-
+	// 加载ES配置
+	err = cfg.Section("elastic").MapTo(ElasticConfigInstance)
+	BusErrorInstance.ThrowError(err)
 }
 
 /**
@@ -71,11 +70,24 @@ func (app *App) loadConfig() {
  * @receiver app
  * @date 2021-02-04 17:06:29
  */
-func (app *App) initializeDB() {
-	// 连接Mysql
-	connectMysql()
-	// 连接Redis
-	connectRedis()
-	// 设置log
-	setLoggerInstance()
+func (app *App) initializeHandle() {
+	fmt.Println(MysqlConfigInstance)
+	fmt.Println(RedisConfigInstance)
+	fmt.Println(LogrusConfigInstance)
+	fmt.Println(ElasticConfigInstance)
+	if MysqlConfigInstance.Enabled {
+		// 连接Mysql
+		connectMysql()
+	}
+	if RedisConfigInstance.Enabled {
+		// 连接Redis
+		connectRedis()
+	}
+	if LogrusConfigInstance.Enabled {
+		// 设置log
+		setLoggerInstance()
+	}
+	if ElasticConfigInstance.Enabled {
+		connectElastic()
+	}
 }

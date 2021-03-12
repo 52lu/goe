@@ -7,6 +7,7 @@ package common
 
 import (
 	"github.com/go-redis/redis/v8"
+	"github.com/olivere/elastic/v7"
 	"github.com/sirupsen/logrus"
 	"goe/app/config"
 	"gorm.io/gorm"
@@ -24,13 +25,15 @@ var (
 	GormDBClient *gorm.DB
 	RedisClient  *redis.Client
 	LoggerClient = logrus.New()
+	ElasticClient *elastic.Client
 )
 
 // 全局配置变量
 var (
-	MysqlConfigInstance  = &config.MysqlConfig{}
-	RedisConfigInstance  = &config.RedisConfig{}
-	LogrusConfigInstance = &config.LogrusConfig{}
+	MysqlConfigInstance   = &config.MysqlConfig{}
+	RedisConfigInstance   = &config.RedisConfig{}
+	LogrusConfigInstance  = &config.LogrusConfig{}
+	ElasticConfigInstance = &config.ElasticConfig{}
 )
 
 // 全局常量
