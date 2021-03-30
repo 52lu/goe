@@ -88,6 +88,7 @@ func (app *App) initializeHandle() {
 		setLoggerInstance()
 	}
 	if ElasticConfigInstance.Enabled {
+		// 连接elasticSearch
 		connectElastic()
 	}
 }

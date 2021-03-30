@@ -145,6 +145,6 @@ func connectElastic() {
 		elastic.SetInfoLog(log.New(os.Stdout, " ", log.LstdFlags)),
 	)
 	BusErrorInstance.ThrowError(err)
-	res, err := ElasticClient.ClusterHealth().Index("test").Level("shards").Pretty(true).Do(context.TODO())
-	LoggerClient.Info("es:%v", res)
+	//res, err := ElasticClient.ClusterHealth().Index("test").Level("shards").Pretty(true).Do(context.TODO())
+	//LoggerClient.Info("es:%v", res)
 }
