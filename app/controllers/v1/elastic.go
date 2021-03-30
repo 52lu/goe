@@ -140,12 +140,11 @@ func (e ElasticController) BatchAddDoc() error {
 // 根据名字查询
 func (e ElasticController) Get() error {
 	name := e.GetParam("name")
-	query := elastic.NewMatchQuery("name", name)
 	list, err := ElasticClient.Search().Index(userIndex).
-		Query(query).
+		Query(elastic.NewMatchQuery("name", name)).
 		Sort("age", true). //根据age字段，正序
-		From(0). //分页
-		Size(20).
+		From(0). // 从第几条开始取
+		Size(20). // 每页数量
 		Pretty(true). //返回json格式
 		Do(context.Background())
 	if err != nil {
